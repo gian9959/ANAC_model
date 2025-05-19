@@ -1,3 +1,4 @@
+import random
 import numpy as np
 import pymysql as pymysql
 from torch.utils.data import Dataset
@@ -40,7 +41,7 @@ class AnacDataset(Dataset):
 
                 companies = []
                 cf_list = data_csv.get('CF')[i].replace("[", "").replace("]", "").replace("'", "").split(", ")
-                targets = data_csv.get('AGG')[i].replace("[", "").split(", ")
+                targets = data_csv.get('AGG')[i].replace("[", "").replace("]", "").split(", ")
                 for k, cf in enumerate(cf_list):
                     query = 'SELECT * FROM imprese WHERE CODICE_FISCALE = %s'
                     params = (cf,)
@@ -65,6 +66,8 @@ class AnacDataset(Dataset):
                     company.update({'ateco_desc': ateco_desc})
                     company.update({'label': label})
                     companies.append(company)
+
+                random.shuffle(companies)
 
                 tender = dict()
                 tender.update({'lat': lat})

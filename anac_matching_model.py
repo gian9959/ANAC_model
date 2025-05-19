@@ -1,4 +1,3 @@
-import torch
 import torch.nn as nn
 
 from encoders.company_encoder import CompanyEncoder
@@ -15,5 +14,5 @@ class AnacMatchingModel(nn.Module):
         tender_emb = self.tender_encoder(tender)
         company_emb = self.company_encoder(company)
 
-        scores = torch.matmul(tender_emb, company_emb)
+        scores = nn.functional.cosine_similarity(tender_emb, company_emb)
         return scores
