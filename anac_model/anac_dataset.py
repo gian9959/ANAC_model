@@ -16,10 +16,10 @@ cur = conn.cursor()
 
 
 class AnacDataset(Dataset):
-    def __init__(self):
+    def __init__(self, path):
         self.data = []
 
-        data_csv = pandas.read_csv('./data/dataset.csv', sep=';')
+        data_csv = pandas.read_csv(path, sep=';')
         d_length = len(data_csv)
         prov_csv = pandas.read_csv('./data/province_italiane.csv', sep=';')
         with alive_bar(d_length) as bar:

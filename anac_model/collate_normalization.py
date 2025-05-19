@@ -1,10 +1,4 @@
 import torch
-import torch.nn as nn
-from alive_progress import alive_bar
-from torch.utils.data import DataLoader
-
-from anac_matching_model import AnacMatchingModel
-from anac_dataset import AnacDataset
 
 MIN_LAT = 36.9269
 MAX_LAT = 46.4983
@@ -82,32 +76,3 @@ def collate_fn(batch):
         print('ERROR - BATCH SIZE ERROR')
 
     return t, c, labs
-
-
-model = AnacMatchingModel()
-optimizer = torch.optim.Adam(model.parameters(), lr=1e-3)
-loss_fn = nn.BCEWithLogitsLoss()
-
-print('Loading dataset...')
-dataset = AnacDataset()
-loader = DataLoader(dataset, batch_size=1, collate_fn=collate_fn)
-print('Training...')
-
-# Training loop
-for epoch in range(10):
-    with alive_bar(len(loader)) as bar:
-        for tender, companies, labels in loader:
-            scores = model(tender, companies)
-            loss = loss_fn(scores, labels)
-            loss.backward()
-            optimizer.step()
-            optimizer.zero_grad()
-            bar()
-
-    print(f"Epoch {epoch}: Loss {loss.item():.4f}")
-    torch.save({
-        'model_state_dict': model.state_dict(),
-        'optimizer_state_dict': optimizer.state_dict(),
-        'epoch': epoch,
-        'loss': loss,
-    }, f"Epoch{epoch}_checkpoint.pth")

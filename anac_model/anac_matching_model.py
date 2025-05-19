@@ -5,7 +5,7 @@ from encoders.tender_encoder import TenderEncoder
 
 
 class AnacMatchingModel(nn.Module):
-    def __init__(self):
+    def __init__(self, hidden_layers=0):
         super().__init__()
         self.tender_encoder = TenderEncoder()
         self.company_encoder = CompanyEncoder()
