@@ -40,12 +40,6 @@ class TenderEncoder(nn.Module):
         # descrizione oggetto (embedding BERT)
         ogg_emb = func.relu(self.ogg_desc_layer(tender["ogg_desc"])).unsqueeze(0)
 
-        # print("geo_emb:", geo_emb.shape)
-        # print("cat_emb:", cat_emb.shape)
-        # print("budget_emb:", budget_emb.shape)
-        # print("cpv_emb:", cpv_emb.shape)
-        # print("ogg_emb:", ogg_emb.shape)
-
         features = torch.cat([geo_emb, cat_emb, budget_emb, cpv_emb, ogg_emb], dim=1)
         output = self.output_layer(features)
 

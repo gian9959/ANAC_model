@@ -1,7 +1,7 @@
 import torch.nn as nn
 
-from encoders.company_encoder import CompanyEncoder
-from encoders.tender_encoder import TenderEncoder
+from anac_model.encoders.company_encoder import CompanyEncoder
+from anac_model.encoders.tender_encoder import TenderEncoder
 
 
 class AnacMatchingModel(nn.Module):
