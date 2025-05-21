@@ -10,7 +10,7 @@ def training(loader, checkpoint_path='', hl=0, epoch_length=10):
     loss_fn = nn.BCEWithLogitsLoss()
 
     if os.path.isfile(checkpoint_path):
-        print('Loading weights...')
+        print(f'Loading checkpoint: {checkpoint_path}')
         checkpoint = torch.load(checkpoint_path)
 
         hidden_layers = checkpoint['hidden_layers']
@@ -22,7 +22,7 @@ def training(loader, checkpoint_path='', hl=0, epoch_length=10):
         model.load_state_dict(checkpoint['state_dict'])
         optimizer.load_state_dict(checkpoint['optimizer'])
     else:
-        print("Weights not initialized")
+        print("Checkpoint NOT loaded")
         hidden_layers = hl
         starting_epoch = 1
         model = AnacMatchingModel(hidden_layers)
