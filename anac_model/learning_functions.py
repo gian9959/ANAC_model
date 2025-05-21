@@ -2,26 +2,19 @@ import os
 import torch
 import torch.nn as nn
 from alive_progress import alive_bar
-from torch.utils.data import DataLoader
 
 from anac_model.anac_matching_model import AnacMatchingModel
-from anac_model.anac_dataset import AnacDataset
-from anac_model.collate_normalization import collate_fn
 
 
-def training(checkpoint_path='', hl=0, epoch_length=10):
-    print('Loading dataset...')
-    dataset = AnacDataset('./data/anac_training.csv')
-    loader = DataLoader(dataset, batch_size=1, collate_fn=collate_fn, shuffle=True)
-
+def training(loader, checkpoint_path='', hl=0, epoch_length=10):
     loss_fn = nn.BCEWithLogitsLoss()
 
-    print('Loading weights...')
     if os.path.isfile(checkpoint_path):
+        print('Loading weights...')
         checkpoint = torch.load(checkpoint_path)
 
         hidden_layers = checkpoint['hidden_layers']
-        starting_epoch = checkpoint['epoch']
+        starting_epoch = checkpoint['epoch'] + 1
 
         model = AnacMatchingModel(hidden_layers)
         optimizer = torch.optim.Adam(model.parameters(), lr=1e-4)
@@ -29,38 +22,40 @@ def training(checkpoint_path='', hl=0, epoch_length=10):
         model.load_state_dict(checkpoint['state_dict'])
         optimizer.load_state_dict(checkpoint['optimizer'])
     else:
+        print("Weights not initialized")
         hidden_layers = hl
         starting_epoch = 1
         model = AnacMatchingModel(hidden_layers)
         optimizer = torch.optim.Adam(model.parameters(), lr=1e-4)
 
+    print(f"Hidden layers: {hidden_layers}")
+
     print('Training...')
     model.train()
 
-    for epoch in range(starting_epoch, starting_epoch+epoch_length):
+    for epoch in range(starting_epoch, starting_epoch + epoch_length):
+        tr_loss = 0.0
         with alive_bar(len(loader)) as bar:
             for tender, companies, labels in loader:
                 scores = model(tender, companies)
                 loss = loss_fn(scores, labels)
+                tr_loss += loss.item()
                 optimizer.zero_grad()
                 loss.backward()
                 optimizer.step()
                 bar()
 
-        print(f"Epoch {epoch}: Loss {loss.item():.4f}")
+        tr_loss = tr_loss / len(loader)
+        print(f"Epoch {epoch}: Loss {tr_loss:.4f}")
         checkpoint = {'epoch': epoch, 'hidden_layers': hidden_layers, 'state_dict': model.state_dict(),
-                      'optimizer': optimizer.state_dict(), 'loss': loss}
+                      'optimizer': optimizer.state_dict(), 'tr_loss': tr_loss}
         save_path = f"./checkpoints/{hidden_layers}HiddenLayers/Epoch{epoch}_checkpoint.pth"
         torch.save(checkpoint, save_path)
 
     return save_path
 
 
-def validation(checkpoint_path):
-    print('Loading dataset...')
-    dataset = AnacDataset('./data/anac_validation.csv')
-    loader = DataLoader(dataset, batch_size=1, collate_fn=collate_fn, shuffle=False)
-
+def validation(loader, checkpoint_path):
     checkpoint = torch.load(checkpoint_path)
     model = AnacMatchingModel(checkpoint['hidden_layers'])
     model.load_state_dict(checkpoint['state_dict'])
@@ -77,6 +72,6 @@ def validation(checkpoint_path):
                 val_loss += loss.item()
                 bar()
 
-    val_loss /= len(loader)
+    val_loss = val_loss / len(loader)
     print(f"Validation Loss: {val_loss:.4f}")
     return val_loss
