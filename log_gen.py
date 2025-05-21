@@ -19,7 +19,11 @@ epochs = []
 tr_loss = []
 val_loss = []
 
-for check_path in os.listdir(config["log_source"]):
+file_list = os.listdir(config["log_source"])
+file_list.sort()
+file_list.sort(key=len)
+
+for check_path in file_list:
     path = config["log_source"] + '/' + check_path
 
     checkpoint = torch.load(path)
@@ -30,4 +34,4 @@ for check_path in os.listdir(config["log_source"]):
 
 csv_dict = {'EPOCH': epochs, 'TR_LOSS': tr_loss, 'VAL_LOSS': val_loss}
 csv_df = pandas.DataFrame(csv_dict)
-csv_df.to_csv(config['log_dest'])
+csv_df.to_csv(config['log_dest'], sep=';', index=False)
