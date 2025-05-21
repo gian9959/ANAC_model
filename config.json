@@ -1,0 +1,7 @@
+{
+  "checkpoint" : "",
+  "hidden_layers": 0,
+
+  "log_source" : "./checkpoints/0HiddenLayers",
+  "log_dest" : "./logs/0H.csv"
+}
