@@ -1,15 +1,20 @@
 {
-  "db_connection": {
+  "db_params": {
     "hostname" : "localhost",
     "username" : "root",
     "password" : "",
     "database" : "anac"
   },
 
-  "checkpoint" : "",
-  "hidden_layers": 2,
-  "dropout": true,
+  "model_params": {
+    "checkpoint": "",
+    "train_len": 10,
+    "hidden_layers": 0,
+    "dropout": false
+  },
 
-  "log_source" : "./checkpoints/2H_dr",
-  "log_dest" : "./logs/2H_dr.csv"
+  "log_params": {
+    "source": "./checkpoints/0H",
+    "dest": "./logs/0H.csv"
+  }
 }

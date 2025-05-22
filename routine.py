@@ -9,20 +9,18 @@ from anac_model.learning_functions import validation
 with open('config.json', 'r') as f:
     config = json.load(f)
 
-db_connection = config['db_connection']
+db_params = config['db_params']
 
 print('Loading training dataset...')
-tr_dataset = AnacDataset('./data/anac_training.csv', db_connection)
+tr_dataset = AnacDataset('./data/anac_training.csv', db_params)
 tr_loader = DataLoader(tr_dataset, batch_size=1, collate_fn=collate_fn, shuffle=True)
 
 print('Loading validation dataset...')
-val_dataset = AnacDataset('./data/anac_validation.csv', db_connection)
+val_dataset = AnacDataset('./data/anac_validation.csv', db_params)
 val_loader = DataLoader(val_dataset, batch_size=1, collate_fn=collate_fn, shuffle=False)
 
-checkpoint_path = config['checkpoint']
-hidden_layers = config['hidden_layers']
-dropout = config['dropout']
+model_params = config['model_params']
 
 for i in range(10):
-    checkpoint_path = training(tr_loader, checkpoint_path=checkpoint_path, hidden_layers=hidden_layers, dropout=dropout)
-    val_loss = validation(val_loader, checkpoint_path=checkpoint_path)
+    checkpoint_path = training(tr_loader, model_params)
+    val_loss = validation(val_loader, model_params)

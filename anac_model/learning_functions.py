@@ -6,15 +6,18 @@ from alive_progress import alive_bar
 from anac_model.anac_matching_model import AnacMatchingModel
 
 
-def training(loader, checkpoint_path='', hidden_layers=0, dropout=False, epoch_length=10):
-    loss_fn = nn.BCEWithLogitsLoss()
+def training(loader, model_params):
+
     starting_epoch = 1
+    train_length = model_params['train_length']
+    hidden_layers = model_params['hidden_layers']
+    dropout = model_params['dropout']
 
     dr_string = ''
 
-    if os.path.isfile(checkpoint_path):
-        print(f'Loading checkpoint: {checkpoint_path}')
-        checkpoint = torch.load(checkpoint_path)
+    if os.path.isfile(model_params['checkpoint']):
+        print(f'Loading checkpoint: {model_params["checkpoint"]}')
+        checkpoint = torch.load(model_params['checkpoint'])
 
         if checkpoint['epoch'] is not None:
             starting_epoch = checkpoint['epoch'] + 1
@@ -26,7 +29,7 @@ def training(loader, checkpoint_path='', hidden_layers=0, dropout=False, epoch_l
             dropout = checkpoint['dropout']
 
         model = AnacMatchingModel(hidden_layers, dropout)
-        optimizer = torch.optim.Adam(model.parameters(), lr=1e-4)
+        optimizer = torch.optim.Adam(model.parameters(), lr=1e-3)
 
         model.load_state_dict(checkpoint['state_dict'])
         optimizer.load_state_dict(checkpoint['optimizer'])
@@ -42,9 +45,10 @@ def training(loader, checkpoint_path='', hidden_layers=0, dropout=False, epoch_l
     print(f"Dropout: {dropout}")
 
     print('Training...')
+    loss_fn = nn.BCELoss()
     model.train()
 
-    for epoch in range(starting_epoch, starting_epoch + epoch_length):
+    for epoch in range(starting_epoch, starting_epoch + train_length):
         tr_loss = 0.0
         with alive_bar(len(loader)) as bar:
             for tender, companies, labels in loader:
@@ -68,8 +72,12 @@ def training(loader, checkpoint_path='', hidden_layers=0, dropout=False, epoch_l
     return save_path
 
 
-def validation(loader, checkpoint_path, hidden_layers=0, dropout=False):
-    checkpoint = torch.load(checkpoint_path)
+def validation(loader, model_params):
+
+    hidden_layers = model_params['hidden_layers']
+    dropout = model_params['dropout']
+
+    checkpoint = torch.load(model_params['checkpoint'])
 
     if checkpoint['hidden_layers'] is not None:
         hidden_layers = checkpoint['hidden_layers']

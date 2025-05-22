@@ -11,22 +11,26 @@ from anac_model.learning_functions import validation
 with open('config.json', 'r') as f:
     config = json.load(f)
 
-db_connection = config['db_connection']
+db_params = config['db_params']
 
 print('Loading validation dataset...')
-val_dataset = AnacDataset('./data/anac_validation.csv', db_connection)
+val_dataset = AnacDataset('./data/anac_validation.csv', db_params)
 val_loader = DataLoader(val_dataset, batch_size=1, collate_fn=collate_fn, shuffle=False)
 
 epochs = []
 tr_loss = []
 val_loss = []
 
-file_list = os.listdir(config["log_source"])
+log_params = config['log_params']
+
+file_list = os.listdir(log_params["source"])
 file_list.sort()
 file_list.sort(key=len)
 
+model_params = config['model_params']
+
 for check_path in file_list:
-    path = config["log_source"] + '/' + check_path
+    path = log_params["source"] + '/' + check_path
 
     checkpoint = torch.load(path)
     print()
@@ -35,8 +39,8 @@ for check_path in file_list:
     epochs.append(checkpoint['epoch'])
     tr_loss.append(checkpoint['tr_loss'])
 
-    val_loss.append(validation(val_loader, checkpoint_path=path))
+    val_loss.append(validation(val_loader, model_params))
 
 csv_dict = {'EPOCH': epochs, 'TR_LOSS': tr_loss, 'VAL_LOSS': val_loss}
 csv_df = pandas.DataFrame(csv_dict)
-csv_df.to_csv(config['log_dest'], sep=';', index=False)
+csv_df.to_csv(log_params['dest'], sep=';', index=False)
