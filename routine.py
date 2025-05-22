@@ -22,5 +22,5 @@ val_loader = DataLoader(val_dataset, batch_size=1, collate_fn=collate_fn, shuffl
 model_params = config['model_params']
 
 for i in range(10):
-    checkpoint_path = training(tr_loader, model_params)
+    model_params['checkpoint'] = training(tr_loader, model_params)
     val_loss = validation(val_loader, model_params)
