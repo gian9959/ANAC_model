@@ -39,6 +39,7 @@ for check_path in file_list:
     epochs.append(checkpoint['epoch'])
     tr_loss.append(checkpoint['tr_loss'])
 
+    model_params['checkpoint'] = path
     val_loss.append(validation(val_loader, model_params))
 
 csv_dict = {'EPOCH': epochs, 'TR_LOSS': tr_loss, 'VAL_LOSS': val_loss}
