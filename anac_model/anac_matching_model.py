@@ -15,4 +15,7 @@ class AnacMatchingModel(nn.Module):
         company_emb = self.company_encoder(company)
 
         scores = nn.functional.cosine_similarity(tender_emb, company_emb)
+
+        # normalize the score to be in range 0, 1
+        scores = (scores + 1) / 2
         return scores
