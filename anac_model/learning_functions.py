@@ -7,7 +7,6 @@ from anac_model.anac_matching_model import AnacMatchingModel
 
 
 def training(loader, checkpoint_path='', hidden_layers=0, dropout=False, epoch_length=10):
-
     loss_fn = nn.BCEWithLogitsLoss()
     starting_epoch = 1
 
@@ -34,7 +33,7 @@ def training(loader, checkpoint_path='', hidden_layers=0, dropout=False, epoch_l
     else:
         print("Checkpoint NOT loaded")
         model = AnacMatchingModel(hidden_layers, dropout)
-        optimizer = torch.optim.Adam(model.parameters(), lr=1e-4)
+        optimizer = torch.optim.Adam(model.parameters(), lr=1e-3)
 
     print(f"Hidden layers: {hidden_layers}")
 
@@ -69,12 +68,19 @@ def training(loader, checkpoint_path='', hidden_layers=0, dropout=False, epoch_l
     return save_path
 
 
-def validation(loader, checkpoint_path):
+def validation(loader, checkpoint_path, hidden_layers=0, dropout=False):
     checkpoint = torch.load(checkpoint_path)
-    model = AnacMatchingModel(checkpoint['hidden_layers'])
+
+    if checkpoint['hidden_layers'] is not None:
+        hidden_layers = checkpoint['hidden_layers']
+
+    if checkpoint['dropout'] is not None:
+        dropout = checkpoint['dropout']
+
+    model = AnacMatchingModel(hidden_layers=hidden_layers, dropout=dropout)
     model.load_state_dict(checkpoint['state_dict'])
 
-    loss_fn = nn.BCEWithLogitsLoss()
+    loss_fn = nn.BCELoss()
     model.eval()
     val_loss = 0.0
 
