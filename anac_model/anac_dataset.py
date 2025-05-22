@@ -6,17 +6,18 @@ from alive_progress import alive_bar
 
 import pandas
 
-hostname = 'localhost'
-username = 'root'
-password = ''
-database = 'anac'
-
-conn = pymysql.connect(host=hostname, user=username, passwd=password, db=database)
-cur = conn.cursor()
-
 
 class AnacDataset(Dataset):
-    def __init__(self, path):
+    def __init__(self, path, db_config):
+
+        hostname = db_config['hostname']
+        username = db_config['username']
+        password = db_config['password']
+        database = db_config['database']
+
+        conn = pymysql.connect(host=hostname, user=username, passwd=password, db=database)
+        cur = conn.cursor()
+
         self.data = []
 
         data_csv = pandas.read_csv(path, sep=';')
@@ -85,4 +86,3 @@ class AnacDataset(Dataset):
 
     def __getitem__(self, i):
         return self.data[i]
-

@@ -1,7 +1,15 @@
 {
-  "checkpoint" : "",
-  "hidden_layers": 0,
+  "db_connection": {
+    "hostname" : "localhost",
+    "username" : "root",
+    "password" : "",
+    "database" : "anac"
+  },
 
-  "log_source" : "./checkpoints/0HiddenLayers",
-  "log_dest" : "./logs/0H.csv"
+  "checkpoint" : "",
+  "hidden_layers": 2,
+  "dropout": true,
+
+  "log_source" : "./checkpoints/2H_dr",
+  "log_dest" : "./logs/2H_dr.csv"
 }

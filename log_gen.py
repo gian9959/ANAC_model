@@ -27,6 +27,9 @@ for check_path in file_list:
     path = config["log_source"] + '/' + check_path
 
     checkpoint = torch.load(path)
+    print()
+    print(f"Epoch: {checkpoint['epoch']}")
+
     epochs.append(checkpoint['epoch'])
     tr_loss.append(checkpoint['tr_loss'])
 

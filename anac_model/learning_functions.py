@@ -6,29 +6,41 @@ from alive_progress import alive_bar
 from anac_model.anac_matching_model import AnacMatchingModel
 
 
-def training(loader, checkpoint_path='', hl=0, epoch_length=10):
+def training(loader, checkpoint_path='', hidden_layers=0, dropout=False, epoch_length=10):
+
     loss_fn = nn.BCEWithLogitsLoss()
+    starting_epoch = 1
+
+    dr_string = ''
 
     if os.path.isfile(checkpoint_path):
         print(f'Loading checkpoint: {checkpoint_path}')
         checkpoint = torch.load(checkpoint_path)
 
-        hidden_layers = checkpoint['hidden_layers']
-        starting_epoch = checkpoint['epoch'] + 1
+        if checkpoint['epoch'] is not None:
+            starting_epoch = checkpoint['epoch'] + 1
 
-        model = AnacMatchingModel(hidden_layers)
+        if checkpoint['hidden_layers'] is not None:
+            hidden_layers = checkpoint['hidden_layers']
+
+        if checkpoint['dropout'] is not None:
+            dropout = checkpoint['dropout']
+
+        model = AnacMatchingModel(hidden_layers, dropout)
         optimizer = torch.optim.Adam(model.parameters(), lr=1e-4)
 
         model.load_state_dict(checkpoint['state_dict'])
         optimizer.load_state_dict(checkpoint['optimizer'])
     else:
         print("Checkpoint NOT loaded")
-        hidden_layers = hl
-        starting_epoch = 1
-        model = AnacMatchingModel(hidden_layers)
+        model = AnacMatchingModel(hidden_layers, dropout)
         optimizer = torch.optim.Adam(model.parameters(), lr=1e-4)
 
     print(f"Hidden layers: {hidden_layers}")
+
+    if dropout:
+        dr_string = '_dr'
+    print(f"Dropout: {dropout}")
 
     print('Training...')
     model.train()
@@ -47,9 +59,11 @@ def training(loader, checkpoint_path='', hl=0, epoch_length=10):
 
         tr_loss = tr_loss / len(loader)
         print(f"Epoch {epoch}: Loss {tr_loss:.4f}")
-        checkpoint = {'epoch': epoch, 'hidden_layers': hidden_layers, 'state_dict': model.state_dict(),
-                      'optimizer': optimizer.state_dict(), 'tr_loss': tr_loss}
-        save_path = f"./checkpoints/{hidden_layers}HiddenLayers/Epoch{epoch}_checkpoint.pth"
+
+        checkpoint = {'epoch': epoch, 'hidden_layers': hidden_layers, 'dropout': dropout,
+                      'state_dict': model.state_dict(), 'optimizer': optimizer.state_dict(), 'tr_loss': tr_loss}
+
+        save_path = f"./checkpoints/{hidden_layers}H{dr_string}/Epoch{epoch}_checkpoint.pth"
         torch.save(checkpoint, save_path)
 
     return save_path
