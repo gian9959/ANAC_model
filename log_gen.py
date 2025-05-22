@@ -8,12 +8,14 @@ from anac_model.anac_dataset import AnacDataset
 from anac_model.collate_normalization import collate_fn
 from anac_model.learning_functions import validation
 
-print('Loading validation dataset...')
-val_dataset = AnacDataset('./data/anac_validation.csv')
-val_loader = DataLoader(val_dataset, batch_size=1, collate_fn=collate_fn, shuffle=False)
-
 with open('config.json', 'r') as f:
     config = json.load(f)
+
+db_connection = config['db_connection']
+
+print('Loading validation dataset...')
+val_dataset = AnacDataset('./data/anac_validation.csv', db_connection)
+val_loader = DataLoader(val_dataset, batch_size=1, collate_fn=collate_fn, shuffle=False)
 
 epochs = []
 tr_loss = []
