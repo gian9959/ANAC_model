@@ -14,7 +14,7 @@
   },
 
   "log_params": {
-    "source": "./checkpoints/0H",
-    "dest": "./logs/0H.csv"
+    "source": "./checkpoints/2H",
+    "dest": "./logs/2H.csv"
   }
 }

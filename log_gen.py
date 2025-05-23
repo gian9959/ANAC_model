@@ -28,6 +28,7 @@ file_list.sort()
 file_list.sort(key=len)
 
 model_params = config['model_params']
+print(f'Source directory: {log_params["source"]}')
 
 for check_path in file_list:
     path = log_params["source"] + '/' + check_path
@@ -45,3 +46,4 @@ for check_path in file_list:
 csv_dict = {'EPOCH': epochs, 'TR_LOSS': tr_loss, 'VAL_LOSS': val_loss}
 csv_df = pandas.DataFrame(csv_dict)
 csv_df.to_csv(log_params['dest'], sep=';', index=False)
+print(f'Csv file saved: {log_params["dest"]}')
