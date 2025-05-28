@@ -11,18 +11,18 @@ from anac_model.collate_normalization import collate_fn
 from anac_model.learning_functions import validation
 
 
-def guesses(all_scores, all_labels):
-    right_guesses = 0
-    for i, scores in enumerate(all_scores):
-        labels = all_labels[i]
-        for j, s in enumerate(scores):
-            if s >= t:
-                s = 1
+def guesses(scores_list, labels_list, threshold):
+    rg = 0
+    for i, values in enumerate(scores_list):
+        labels = labels_list[i]
+        for j, v in enumerate(values):
+            if v >= threshold:
+                v = 1
             else:
-                s = 0
-            if s == int(labels[j]):
-                right_guesses += 1
-    return right_guesses
+                v = 0
+            if v == int(labels[j]):
+                rg += 1
+    return rg
 
 with open('config.json', 'r') as f:
     config = json.load(f)
@@ -73,13 +73,13 @@ all_labels = list()
 
 with torch.no_grad():
     for tend, comp, lab in val_loader:
-        s = model(tend, comp)
-        all_scores.append(s)
+        score = model(tend, comp)
+        all_scores.append(score)
         all_labels.append(lab)
         total_labels += len(lab)
 
 for t in thresholds:
-    right_guesses = guesses(all_scores, all_labels)
+    right_guesses = guesses(all_scores, all_labels, t)
     if right_guesses > best_guesses:
         best_guesses = right_guesses
         best_threshold = t
@@ -106,7 +106,7 @@ with torch.no_grad():
         all_labels.append(lab)
         total_labels += len(lab)
 
-right_guesses = guesses(all_scores, all_labels)
+right_guesses = guesses(all_scores, all_labels, best_threshold)
 
 print(f'Total labels: {total_labels}')
 print(f'Right guesses: {right_guesses}')
