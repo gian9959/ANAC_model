@@ -17,9 +17,15 @@ print('Loading validation dataset...')
 val_dataset = AnacDataset('./data/anac_validation.csv', db_params)
 val_loader = DataLoader(val_dataset, batch_size=1, collate_fn=collate_fn, shuffle=False)
 
+tr_dataset = AnacDataset('./data/anac_training.csv', db_params)
+tr_loader = DataLoader(tr_dataset, batch_size=1, collate_fn=collate_fn, shuffle=False)
+
 epochs = []
 tr_loss = []
 val_loss = []
+best_thresh = []
+val_acc = []
+tr_acc = []
 
 log_params = config['log_params']
 
@@ -41,9 +47,15 @@ for check_path in file_list:
     tr_loss.append(checkpoint['tr_loss'])
 
     model_params['checkpoint'] = path
-    val_loss.append(validation(val_loader, model_params))
+    v_l, b_t, v_acc = validation(val_loader, model_params)
+    val_loss.append(v_l)
+    best_thresh.append(b_t)
+    val_acc.append(v_acc)
 
-csv_dict = {'EPOCH': epochs, 'TR_LOSS': tr_loss, 'VAL_LOSS': val_loss}
+    _, _, t_acc = validation(tr_loader, model_params)
+    tr_acc.append(t_acc)
+
+csv_dict = {'EPOCH': epochs, 'TRAINING LOSS': tr_loss, 'VALIDATION LOSS': val_loss, 'THRESHOLD (BASED ON VALIDATION SET)': best_thresh, 'VALIDATION ACCURACY': val_acc, 'TRAINING ACCURACY': tr_acc}
 csv_df = pandas.DataFrame(csv_dict)
 csv_df.to_csv(log_params['dest'], sep=';', index=False)
 print(f'Csv file saved: {log_params["dest"]}')

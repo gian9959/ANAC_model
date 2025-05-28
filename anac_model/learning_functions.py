@@ -1,4 +1,6 @@
 import os
+
+import numpy as np
 import torch
 import torch.nn as nn
 from alive_progress import alive_bar
@@ -7,7 +9,6 @@ from anac_model.anac_matching_model import AnacMatchingModel
 
 
 def training(loader, model_params):
-
     starting_epoch = 1
     train_length = model_params['train_length']
     hidden_layers = model_params['hidden_layers']
@@ -72,8 +73,21 @@ def training(loader, model_params):
     return save_path
 
 
-def validation(loader, model_params):
+def guesses(scores_list, labels_list, threshold):
+    rg = 0
+    for i, values in enumerate(scores_list):
+        labels = labels_list[i]
+        for j, v in enumerate(values):
+            if v >= threshold:
+                v = 1
+            else:
+                v = 0
+            if v == int(labels[j]):
+                rg += 1
+    return rg
 
+
+def validation(loader, model_params):
     hidden_layers = model_params['hidden_layers']
     dropout = model_params['dropout']
 
@@ -88,18 +102,42 @@ def validation(loader, model_params):
     model = AnacMatchingModel(hidden_layers=hidden_layers, dropout=dropout)
     model.load_state_dict(checkpoint['state_dict'])
 
-    loss_fn = nn.BCELoss()
     model.eval()
+
+    loss_fn = nn.BCELoss()
     val_loss = 0.0
+
+    thresholds = np.linspace(0, 1, 100)
+    best_threshold = 0.0
+    best_guesses = 0
+    total_labels = 0
+    all_scores = list()
+    all_labels = list()
 
     with torch.no_grad():
         with alive_bar(len(loader)) as bar:
             for tender, companies, labels in loader:
                 scores = model(tender, companies)
+
                 loss = loss_fn(scores, labels)
                 val_loss += loss.item()
+
+                all_scores.append(scores)
+                all_labels.append(labels)
+                total_labels += len(labels)
                 bar()
 
-    val_loss = val_loss / len(loader)
-    print(f"Validation Loss: {val_loss:.4f}")
-    return val_loss
+    for t in thresholds:
+        right_guesses = guesses(all_scores, all_labels, t)
+        if right_guesses > best_guesses:
+            best_guesses = right_guesses
+            best_threshold = t
+
+    print(f"Validation Loss: {val_loss/len(loader):.4f}")
+
+    print()
+    print(f'Best threshold: {best_threshold}')
+    print(f'Accuracy: {best_guesses / total_labels}')
+    print(f'{best_guesses} right guesses out of {total_labels}')
+
+    return val_loss, best_threshold, best_guesses / total_labels

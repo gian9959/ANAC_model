@@ -23,4 +23,4 @@ model_params = config['model_params']
 
 for i in range(10):
     model_params['checkpoint'] = training(tr_loader, model_params)
-    val_loss = validation(val_loader, model_params)
+    validation(val_loader, model_params)
