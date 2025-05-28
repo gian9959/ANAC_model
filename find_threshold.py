@@ -10,6 +10,20 @@ from anac_model.anac_matching_model import AnacMatchingModel
 from anac_model.collate_normalization import collate_fn
 from anac_model.learning_functions import validation
 
+
+def guesses(all_scores, all_labels):
+    right_guesses = 0
+    for i, scores in enumerate(all_scores):
+        labels = all_labels[i]
+        for j, s in enumerate(scores):
+            if s >= t:
+                s = 1
+            else:
+                s = 0
+            if s == int(labels[j]):
+                right_guesses += 1
+    return right_guesses
+
 with open('config.json', 'r') as f:
     config = json.load(f)
 
@@ -58,28 +72,21 @@ all_scores = list()
 all_labels = list()
 
 with torch.no_grad():
-    for tender, companies, labels in val_loader:
-        scores = model(tender, companies)
-        all_scores.append(scores)
-        all_labels.append(labels)
-        total_labels += len(labels)
+    for tend, comp, lab in val_loader:
+        s = model(tend, comp)
+        all_scores.append(s)
+        all_labels.append(lab)
+        total_labels += len(lab)
 
 for t in thresholds:
-    right_guesses = 0
-    for i, s in enumerate(all_scores):
-        s = np.array(s)
-        labs = all_labels[i]
-        guesses = (s >= t).astype(int)
-        for j, g in enumerate(guesses):
-            if g == labs[j]:
-                right_guesses += 1
+    right_guesses = guesses(all_scores, all_labels)
     if right_guesses > best_guesses:
         best_guesses = right_guesses
         best_threshold = t
 
 print(f'Total labels: {total_labels}')
 print(f'Right guesses: {best_guesses}')
-print(f'Accuracy: {best_guesses/total_labels}')
+print(f'Accuracy: {best_guesses / total_labels}')
 print(f'Best threshold: {best_threshold}')
 
 print()
@@ -93,20 +100,14 @@ all_scores = list()
 all_labels = list()
 
 with torch.no_grad():
-    for tender, companies, labels in tr_loader:
-        scores = model(tender, companies)
+    for tend, comp, lab in tr_loader:
+        scores = model(tend, comp)
         all_scores.append(scores)
-        all_labels.append(labels)
-        total_labels += len(labels)
+        all_labels.append(lab)
+        total_labels += len(lab)
 
-for i, s in enumerate(all_scores):
-    s = np.array(s)
-    labs = all_labels[i]
-    guesses = (s >= best_threshold).astype(int)
-    for j, g in enumerate(guesses):
-        if g == labs[j]:
-            right_guesses += 1
+right_guesses = guesses(all_scores, all_labels)
 
 print(f'Total labels: {total_labels}')
 print(f'Right guesses: {right_guesses}')
-print(f'Accuracy: {right_guesses/total_labels}')
+print(f'Accuracy: {right_guesses / total_labels}')
