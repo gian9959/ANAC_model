@@ -127,11 +127,13 @@ def validation(loader, model_params):
                 total_labels += len(labels)
                 bar()
 
-    for t in thresholds:
-        right_guesses = guesses(all_scores, all_labels, t)
-        if right_guesses > best_guesses:
-            best_guesses = right_guesses
-            best_threshold = t
+    with alive_bar(len(thresholds)) as bar:
+        for t in thresholds:
+            right_guesses = guesses(all_scores, all_labels, t)
+            if right_guesses > best_guesses:
+                best_guesses = right_guesses
+                best_threshold = t
+            bar()
 
     print(f"Validation Loss: {val_loss/len(loader):.4f}")
 
@@ -140,4 +142,4 @@ def validation(loader, model_params):
     print(f'Accuracy: {best_guesses / total_labels}')
     print(f'{best_guesses} right guesses out of {total_labels}')
 
-    return val_loss, best_threshold, best_guesses / total_labels
+    return val_loss / len(loader), best_threshold, best_guesses / total_labels
