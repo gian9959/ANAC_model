@@ -48,10 +48,10 @@ class TenderEncoder(nn.Module):
         budget_emb = func.relu(self.budget_layer(tender["budget"])).unsqueeze(0)
 
         # descrizione cpv (embedding BERT)
-        cpv_emb = func.relu(self.cpv_desc_layer(tender["cpv_desc"])).unsqueeze(0)
+        cpv_emb = func.relu(self.cpv_desc_layer(tender["cpv"])).unsqueeze(0)
 
         # descrizione oggetto (embedding BERT)
-        ogg_emb = func.relu(self.ogg_desc_layer(tender["ogg_desc"])).unsqueeze(0)
+        ogg_emb = func.relu(self.ogg_desc_layer(tender["ogg"])).unsqueeze(0)
 
         features = torch.cat([geo_emb, cat_emb, budget_emb, cpv_emb, ogg_emb], dim=1)
 

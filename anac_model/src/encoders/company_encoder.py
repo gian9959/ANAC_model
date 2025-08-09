@@ -45,7 +45,7 @@ class CompanyEncoder(nn.Module):
         revenue_emb = func.relu(self.revenue_layer(company["revenue"]))
 
         # descrizione ateco (embedding BERT)
-        descr_emb = func.relu(self.desc_layer(company["ateco_desc"]))
+        descr_emb = func.relu(self.desc_layer(company["ateco"]))
 
         features = torch.cat([geo_emb, foundation_emb, revenue_emb, descr_emb], dim=1)
 
