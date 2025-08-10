@@ -1,9 +1,6 @@
 import random
 import numpy as np
-import pymysql as pymysql
 from torch.utils.data import Dataset
-
-import pandas
 
 
 class AnacDataset(Dataset):

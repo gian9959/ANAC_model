@@ -10,7 +10,7 @@ class AnacMatchingModel(nn.Module):
         self.tender_encoder = TenderEncoder(hl=hidden_layers, dr=dropout)
         self.company_encoder = CompanyEncoder(hl=hidden_layers, dr=dropout)
 
-    def forward(self, tender, company):
+    def forward(self, tender, company, company_mask=None):
         tender_emb = self.tender_encoder(tender)
         company_emb = self.company_encoder(company)
 
