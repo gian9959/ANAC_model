@@ -14,6 +14,8 @@ class AnacDataset(Dataset):
             tender.update({'lon': torch.tensor(d['lon'], dtype=torch.float32)})
             tender.update({'budget': torch.tensor(d['budget'], dtype=torch.float32)})
             tender.update({'cat': torch.tensor(d['cat'], dtype=torch.float32)})
+            tender.update({'cpv': torch.tensor(d['cpv'], dtype=torch.float32)})
+            tender.update({'ogg': torch.tensor(d['ogg'], dtype=torch.float32)})
 
             lat_list = []
             lon_list = []
@@ -27,7 +29,7 @@ class AnacDataset(Dataset):
                 lon_list.append(c['lon'])
                 found_list.append(c['foundation'])
                 rev_list.append(c['revenue'])
-                ateco_list.append(c['ateco'])
+                ateco_list.append(torch.tensor(c['ateco'], dtype=torch.float32))
                 lab_list.append(c['label'])
 
             companies = dict()
@@ -35,7 +37,7 @@ class AnacDataset(Dataset):
             companies.update({'lon': torch.tensor(lon_list, dtype=torch.float32)})
             companies.update({'foundation': torch.tensor(found_list, dtype=torch.float32)})
             companies.update({'revenue': torch.tensor(rev_list, dtype=torch.float32)})
-            companies.update({'ateco': torch.tensor(ateco_list)})
+            companies.update({'ateco': torch.stack(ateco_list)})
             companies.update({'label': torch.tensor(lab_list, dtype=torch.float32)})
 
             tender.update({'companies': companies})
@@ -55,6 +57,8 @@ def collate(batch):
     t_lon = []
     budgets = []
     cats = []
+    cpvs = []
+    oggs = []
 
     c_lat = []
     c_lon = []
@@ -69,34 +73,25 @@ def collate(batch):
         t_lon.append(b['lon'])
         budgets.append(b['budget'])
         cats.append(b['cat'])
+        cpvs.append(b['cpv'])
+        oggs.append(b['ogg'])
 
-        tmp_lat = []
-        tmp_lon = []
-        tmp_foundations = []
-        tmp_revenues = []
-        tmp_atecos = []
-        tmp_labels = []
-        for c in b['companies']:
-            tmp_lat.append(c['lat'])
-            tmp_lon.append(c['lon'])
-            tmp_foundations.append(c['foundation'])
-            tmp_revenues.append(c['revenue'])
-            tmp_atecos.append(c['ateco'])
-            tmp_labels.append(c['label'])
+        c = b['companies']
+        c_lat.append(func.pad(c['lat'], (0, max_comp - len(c['lat']))))
+        c_lon.append(func.pad(c['lon'], (0, max_comp - len(c['lat']))))
+        foundations.append(func.pad(c['foundation'], (0, max_comp - len(c['lat']))))
+        revenues.append(func.pad(c['revenue'], (0, max_comp - len(c['lat']))))
+        atecos.append(func.pad(c['ateco'], (0, 0, 0, max_comp - len(c['lat']))))
+        labels.append(func.pad(c['label'], (0, max_comp - len(c['lat']))))
 
-        c_lat.append(func.pad(torch.stack(tmp_lat), (0, max_comp - len(b['companies'])), value=0))
-        c_lon.append(func.pad(torch.stack(tmp_lon), (0, max_comp - len(b['companies'])), value=0))
-        foundations.append(func.pad(torch.stack(tmp_foundations), (0, max_comp - len(b['companies'])), value=0))
-        revenues.append(func.pad(torch.stack(tmp_revenues), (0, max_comp - len(b['companies'])), value=0))
-        atecos.append(func.pad(torch.stack(tmp_atecos), (0, max_comp - len(b['companies'])), value=0))
-        labels.append(func.pad(torch.stack(tmp_labels), (0, max_comp - len(b['companies'])), value=0))
-
-        masks.append(func.pad(torch.ones(len(b['companies'])), (0, max_comp - len(b['companies'])), value=0))
+        masks.append(func.pad(torch.ones(len(c['lat'])), (0, max_comp - len(c['lat']))))
 
     t_lat = torch.stack(t_lat)
     t_lon = torch.stack(t_lon)
     budgets = torch.stack(budgets)
     cats = torch.stack(cats)
+    cpvs = torch.stack(cpvs)
+    oggs = torch.stack(oggs)
 
     c_lat = torch.stack(c_lat)
     c_lon = torch.stack(c_lon)
@@ -111,7 +106,9 @@ def collate(batch):
         'lat': t_lat,
         'lon': t_lon,
         'budget': budgets,
-        'cat': cats
+        'cat': cats,
+        'cpv': cpvs,
+        'oggs': oggs
     }
 
     companies = {
