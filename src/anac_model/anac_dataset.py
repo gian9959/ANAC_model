@@ -51,7 +51,7 @@ class AnacDataset(Dataset):
 
 
 def collate(batch):
-    max_comp = max(len(b['companies']) for b in batch)
+    max_comp = max(len(b['companies']['lat']) for b in batch)
 
     t_lat = []
     t_lon = []
