@@ -38,22 +38,22 @@ class TenderEncoder(nn.Module):
 
     def forward(self, tender):
         # lat e lon della provincia
-        geo = torch.stack([tender["lat"], tender["lon"]], dim=1)
+        geo = torch.stack([tender["lat"], tender["lon"]], dim=-1)
         geo_emb = func.relu(self.geo_layer(geo))
 
         # categoria oggetto gara
         cat_emb = func.relu(self.cat_layer(tender["cat"]))
 
         # importo
-        budget_emb = func.relu(self.budget_layer(tender["budget"])).unsqueeze(0)
+        budget_emb = func.relu(self.budget_layer(tender["budget"]))
 
         # descrizione cpv (embedding BERT)
-        cpv_emb = func.relu(self.cpv_desc_layer(tender["cpv"])).unsqueeze(0)
+        cpv_emb = func.relu(self.cpv_desc_layer(tender["cpv"]))
 
         # descrizione oggetto (embedding BERT)
-        ogg_emb = func.relu(self.ogg_desc_layer(tender["ogg"])).unsqueeze(0)
+        ogg_emb = func.relu(self.ogg_desc_layer(tender["ogg"]))
 
-        features = torch.cat([geo_emb, cat_emb, budget_emb, cpv_emb, ogg_emb], dim=1)
+        features = torch.cat([geo_emb, cat_emb, budget_emb, cpv_emb, ogg_emb], dim=-1)
 
         # hidden layers
         if self.hl > 0:

@@ -13,7 +13,7 @@ class AnacDataset(Dataset):
             tender.update({'lat': torch.tensor(d['lat'], dtype=torch.float32)})
             tender.update({'lon': torch.tensor(d['lon'], dtype=torch.float32)})
             tender.update({'budget': torch.tensor(d['budget'], dtype=torch.float32)})
-            tender.update({'cat': torch.tensor(d['cat'], dtype=torch.float32)})
+            tender.update({'cat': torch.tensor(d['cat'], dtype=torch.long)})
             tender.update({'cpv': torch.tensor(d['cpv'], dtype=torch.float32)})
             tender.update({'ogg': torch.tensor(d['ogg'], dtype=torch.float32)})
 
@@ -88,15 +88,15 @@ def collate(batch):
 
     t_lat = torch.stack(t_lat)
     t_lon = torch.stack(t_lon)
-    budgets = torch.stack(budgets)
+    budgets = torch.stack(budgets).unsqueeze(-1)
     cats = torch.stack(cats)
     cpvs = torch.stack(cpvs)
     oggs = torch.stack(oggs)
 
     c_lat = torch.stack(c_lat)
     c_lon = torch.stack(c_lon)
-    foundations = torch.stack(foundations)
-    revenues = torch.stack(revenues)
+    foundations = torch.stack(foundations).unsqueeze(-1)
+    revenues = torch.stack(revenues).unsqueeze(-1)
     atecos = torch.stack(atecos)
     labels = torch.stack(labels)
 
@@ -108,7 +108,7 @@ def collate(batch):
         'budget': budgets,
         'cat': cats,
         'cpv': cpvs,
-        'oggs': oggs
+        'ogg': oggs
     }
 
     companies = {

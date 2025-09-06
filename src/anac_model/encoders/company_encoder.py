@@ -35,7 +35,7 @@ class CompanyEncoder(nn.Module):
 
     def forward(self, company):
         # lat e lon della provincia
-        geo = torch.stack([company["lat"], company["lon"]], dim=1)
+        geo = torch.stack([company["lat"], company["lon"]], dim=-1)
         geo_emb = func.relu(self.geo_layer(geo))
 
         # anno di fondazione
@@ -47,7 +47,7 @@ class CompanyEncoder(nn.Module):
         # descrizione ateco (embedding BERT)
         descr_emb = func.relu(self.desc_layer(company["ateco"]))
 
-        features = torch.cat([geo_emb, foundation_emb, revenue_emb, descr_emb], dim=1)
+        features = torch.cat([geo_emb, foundation_emb, revenue_emb, descr_emb], dim=-1)
 
         # hidden layers
         if self.hl > 0:

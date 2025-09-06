@@ -11,10 +11,11 @@ class AnacMatchingModel(nn.Module):
         self.company_encoder = CompanyEncoder(hl=hidden_layers, dr=dropout)
 
     def forward(self, tender, company):
-        tender_emb = self.tender_encoder(tender)
+        tender_emb = self.tender_encoder(tender).unsqueeze(1)
         company_emb = self.company_encoder(company)
 
-        scores = nn.functional.cosine_similarity(tender_emb, company_emb)
+
+        scores = nn.functional.cosine_similarity(tender_emb, company_emb, dim=-1)
 
         # normalize the score to be in range 0, 1
         scores = (scores + 1) / 2
