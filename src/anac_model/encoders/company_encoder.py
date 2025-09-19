@@ -18,8 +18,11 @@ class CompanyEncoder(nn.Module):
         # anno di fondazione
         self.foundation_layer = nn.Linear(1, 16)
 
-        # fatturato
+        # ricavi
         self.revenue_layer = nn.Linear(1, 16)
+
+        # dipendenti
+        self.employees_layer = nn.Linear(1, 16)
 
         # descrizione ateco (embedding BERT)
         self.desc_layer = nn.Linear(bert_dim, 64)
@@ -27,11 +30,11 @@ class CompanyEncoder(nn.Module):
         # hidden layers
         if self.hl > 0:
             for _ in range(self.hl):
-                self.hidden_layers.append(nn.Linear(16 + 16 + 16 + 64, 16 + 16 + 16 + 64))
+                self.hidden_layers.append(nn.Linear(16 + 16 + 16 + 16 + 64, 16 + 16 + 16 + 16 + 64))
                 if dr:
                     self.dropout_layers.append(nn.Dropout(0.3))
 
-        self.output_layer = nn.Linear(16 + 16 + 16 + 64, output_dim)
+        self.output_layer = nn.Linear(16 + 16 + 16 + 16 + 64, output_dim)
 
     def forward(self, company):
         # lat e lon della provincia
@@ -41,13 +44,16 @@ class CompanyEncoder(nn.Module):
         # anno di fondazione
         foundation_emb = func.relu(self.foundation_layer(company["foundation"]))
 
-        # fatturato
+        # ricavi
         revenue_emb = func.relu(self.revenue_layer(company["revenue"]))
+
+        # dipendenti
+        employees_emb = func.relu(self.employees_layer(company["employees"]))
 
         # descrizione ateco (embedding BERT)
         descr_emb = func.relu(self.desc_layer(company["ateco"]))
 
-        features = torch.cat([geo_emb, foundation_emb, revenue_emb, descr_emb], dim=-1)
+        features = torch.cat([geo_emb, foundation_emb, revenue_emb, employees_emb, descr_emb], dim=-1)
 
         # hidden layers
         if self.hl > 0:

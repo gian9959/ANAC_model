@@ -21,6 +21,7 @@ class AnacDataset(Dataset):
             lon_list = []
             found_list = []
             rev_list = []
+            emp_list = []
             ateco_list = []
             lab_list = []
             random.shuffle(tender["companies"])
@@ -29,6 +30,7 @@ class AnacDataset(Dataset):
                 lon_list.append(c['lon'])
                 found_list.append(c['foundation'])
                 rev_list.append(c['revenue'])
+                emp_list.append(c['employees'])
                 ateco_list.append(torch.tensor(c['ateco'], dtype=torch.float32))
                 lab_list.append(c['label'])
 
@@ -37,6 +39,7 @@ class AnacDataset(Dataset):
             companies.update({'lon': torch.tensor(lon_list, dtype=torch.float32)})
             companies.update({'foundation': torch.tensor(found_list, dtype=torch.float32)})
             companies.update({'revenue': torch.tensor(rev_list, dtype=torch.float32)})
+            companies.update({'employees': torch.tensor(emp_list, dtype=torch.float32)})
             companies.update({'ateco': torch.stack(ateco_list)})
             companies.update({'label': torch.tensor(lab_list, dtype=torch.float32)})
 
@@ -64,6 +67,7 @@ def collate(batch):
     c_lon = []
     foundations = []
     revenues = []
+    employees = []
     atecos = []
     labels = []
 
@@ -81,6 +85,7 @@ def collate(batch):
         c_lon.append(func.pad(c['lon'], (0, max_comp - len(c['lat']))))
         foundations.append(func.pad(c['foundation'], (0, max_comp - len(c['lat']))))
         revenues.append(func.pad(c['revenue'], (0, max_comp - len(c['lat']))))
+        employees.append(func.pad(c['employees'], (0, max_comp - len(c['lat']))))
         atecos.append(func.pad(c['ateco'], (0, 0, 0, max_comp - len(c['lat']))))
         labels.append(func.pad(c['label'], (0, max_comp - len(c['lat']))))
 
@@ -97,6 +102,7 @@ def collate(batch):
     c_lon = torch.stack(c_lon)
     foundations = torch.stack(foundations).unsqueeze(-1)
     revenues = torch.stack(revenues).unsqueeze(-1)
+    employees = torch.stack(employees).unsqueeze(-1)
     atecos = torch.stack(atecos)
     labels = torch.stack(labels)
 
@@ -116,6 +122,7 @@ def collate(batch):
         'lon': c_lon,
         'foundation': foundations,
         'revenue': revenues,
+        'employees': employees,
         'ateco': atecos,
         'label': labels
     }
