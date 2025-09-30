@@ -4,7 +4,7 @@ import torch.nn.functional as func
 
 
 class CompanyEncoder(nn.Module):
-    def __init__(self, bert_dim=768, output_dim=128, hl=0, dr=False):
+    def __init__(self, bert_dim=768, output_dim=96, hl=0, dr=False):
         super().__init__()
         self.hl = hl
         self.hidden_layers = nn.ModuleList()
@@ -13,16 +13,16 @@ class CompanyEncoder(nn.Module):
         self.dropout_layers = nn.ModuleList()
 
         # lat e lon della provincia
-        self.geo_layer = nn.Linear(2, 16)
+        self.geo_layer = nn.Linear(2, 8)
 
         # anno di fondazione
-        self.foundation_layer = nn.Linear(1, 16)
+        self.foundation_layer = nn.Linear(1, 8)
 
         # ricavi
-        self.revenue_layer = nn.Linear(1, 16)
+        self.revenue_layer = nn.Linear(1, 8)
 
         # dipendenti
-        self.employees_layer = nn.Linear(1, 16)
+        self.employees_layer = nn.Linear(1, 8)
 
         # descrizione ateco (embedding BERT)
         self.desc_layer = nn.Linear(bert_dim, 64)
@@ -30,11 +30,11 @@ class CompanyEncoder(nn.Module):
         # hidden layers
         if self.hl > 0:
             for _ in range(self.hl):
-                self.hidden_layers.append(nn.Linear(16 + 16 + 16 + 16 + 64, 16 + 16 + 16 + 16 + 64))
+                self.hidden_layers.append(nn.Linear(8 + 8 + 8 + 8 + 64, 8 + 8 + 8 + 8 + 64))
                 if dr:
                     self.dropout_layers.append(nn.Dropout(0.3))
 
-        self.output_layer = nn.Linear(16 + 16 + 16 + 16 + 64, output_dim)
+        self.output_layer = nn.Linear(8 + 8 + 8 + 8 + 64, output_dim)
 
     def forward(self, company):
         # lat e lon della provincia
