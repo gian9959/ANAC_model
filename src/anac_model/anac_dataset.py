@@ -17,6 +17,7 @@ class AnacDataset(Dataset):
             tender.update({'cpv': torch.tensor(d['cpv'], dtype=torch.float32)})
             tender.update({'ogg': torch.tensor(d['ogg'], dtype=torch.float32)})
 
+            id_list = []
             lat_list = []
             lon_list = []
             found_list = []
@@ -24,8 +25,10 @@ class AnacDataset(Dataset):
             emp_list = []
             ateco_list = []
             lab_list = []
+            reg_list = []
             random.shuffle(tender["companies"])
             for c in tender['companies']:
+                id_list.append(c['id'])
                 lat_list.append(c['lat'])
                 lon_list.append(c['lon'])
                 found_list.append(c['foundation'])
@@ -33,8 +36,10 @@ class AnacDataset(Dataset):
                 emp_list.append(c['employees'])
                 ateco_list.append(torch.tensor(c['ateco'], dtype=torch.float32))
                 lab_list.append(c['label'])
+                reg_list.append(c['region'])
 
             companies = dict()
+            companies.update({'id': id_list})
             companies.update({'lat': torch.tensor(lat_list, dtype=torch.float32)})
             companies.update({'lon': torch.tensor(lon_list, dtype=torch.float32)})
             companies.update({'foundation': torch.tensor(found_list, dtype=torch.float32)})
@@ -42,6 +47,7 @@ class AnacDataset(Dataset):
             companies.update({'employees': torch.tensor(emp_list, dtype=torch.float32)})
             companies.update({'ateco': torch.stack(ateco_list)})
             companies.update({'label': torch.tensor(lab_list, dtype=torch.float32)})
+            companies.update({'region': reg_list})
 
             tender.update({'companies': companies})
             self.data.append(tender)
@@ -56,6 +62,7 @@ class AnacDataset(Dataset):
 def collate(batch):
     max_comp = max(len(b['companies']['lat']) for b in batch)
 
+    t_ids = []
     t_lat = []
     t_lon = []
     budgets = []
@@ -63,6 +70,7 @@ def collate(batch):
     cpvs = []
     oggs = []
 
+    c_ids = []
     c_lat = []
     c_lon = []
     foundations = []
@@ -70,9 +78,11 @@ def collate(batch):
     employees = []
     atecos = []
     labels = []
+    regions = []
 
     masks = []
     for b in batch:
+        t_ids.append(b['id'])
         t_lat.append(b['lat'])
         t_lon.append(b['lon'])
         budgets.append(b['budget'])
@@ -81,6 +91,7 @@ def collate(batch):
         oggs.append(b['ogg'])
 
         c = b['companies']
+        c_ids.append(c['id'])
         c_lat.append(func.pad(c['lat'], (0, max_comp - len(c['lat']))))
         c_lon.append(func.pad(c['lon'], (0, max_comp - len(c['lat']))))
         foundations.append(func.pad(c['foundation'], (0, max_comp - len(c['lat']))))
@@ -88,6 +99,7 @@ def collate(batch):
         employees.append(func.pad(c['employees'], (0, max_comp - len(c['lat']))))
         atecos.append(func.pad(c['ateco'], (0, 0, 0, max_comp - len(c['lat']))))
         labels.append(func.pad(c['label'], (0, max_comp - len(c['lat']))))
+        regions.append(c['region'])
 
         masks.append(func.pad(torch.ones(len(c['lat'])), (0, max_comp - len(c['lat']))))
 
@@ -109,6 +121,7 @@ def collate(batch):
     masks = torch.stack(masks)
 
     tenders = {
+        'id': t_ids,
         'lat': t_lat,
         'lon': t_lon,
         'budget': budgets,
@@ -118,13 +131,15 @@ def collate(batch):
     }
 
     companies = {
+        'id': c_ids,
         'lat': c_lat,
         'lon': c_lon,
         'foundation': foundations,
         'revenue': revenues,
         'employees': employees,
         'ateco': atecos,
-        'label': labels
+        'label': labels,
+        'region': regions
     }
 
     return tenders, companies, masks
