@@ -1,0 +1,112 @@
+Sigla;Provincia;Latitudine;Longitudine;Regione
+AG;Agrigento;37.3111;13.5765;Sicilia
+AL;Alessandria;44.9133;8.6207;Piemonte
+AN;Ancona;43.6158;13.5189;Marche
+AO;Aosta;45.737;7.317;Valle Aosta
+AR;Arezzo;43.4633;11.8818;Toscana
+AP;Ascoli Piceno;42.8536;13.5748;Marche
+AT;Asti;44.9007;8.2064;Piemonte
+AV;Avellino;40.914;14.7901;Campania
+BA;Bari;41.1171;16.8719;Puglia
+BT;Barletta-Andria-Trani;41.227;16.2963;Puglia
+BL;Belluno;46.1382;12.2173;Veneto
+BN;Benevento;41.1296;14.781;Campania
+BG;Bergamo;45.6983;9.6773;Lombardia
+BI;Biella;45.5623;8.0586;Piemonte
+BO;Bologna;44.4949;11.3426;Emilia Romagna
+BZ;Bolzano;46.4983;11.3548;Trentino
+BS;Brescia;45.5416;10.2118;Lombardia
+BR;Brindisi;40.6327;17.9368;Puglia
+CA;Cagliari;39.2238;9.1217;Sardegna
+CL;Caltanissetta;37.4903;14.0622;Sicilia
+CB;Campobasso;41.5603;14.6621;Molise
+CI;Carbonia-Iglesias;39.1678;8.5221;Sardegna
+CE;Caserta;41.0747;14.3323;Campania
+CT;Catania;37.5079;15.083;Sicilia
+CZ;Catanzaro;38.9098;16.5877;Calabria
+CH;Chieti;42.347;14.1675;Abruzzo
+CO;Como;45.8081;9.0852;Lombardia
+CS;Cosenza;39.2983;16.253;Calabria
+CR;Cremona;45.1333;10.0333;Lombardia
+KR;Crotone;39.0851;17.1236;Calabria
+CN;Cuneo;44.3894;7.5486;Piemonte
+EN;Enna;37.5673;14.2794;Sicilia
+FM;Fermo;43.1604;13.7185;Marche
+FE;Ferrara;44.8354;11.6196;Emilia Romagna
+FI;Firenze;43.7696;11.2558;Toscana
+FG;Foggia;41.4622;15.5446;Puglia
+FO;Forlì-Cesena;44.2227;12.0407;Emilia Romagna
+FC;Forlì-Cesena;44.2227;12.0407;Emilia Romagna
+FR;Frosinone;41.6412;13.3515;Lazio
+GE;Genova;44.4056;8.9463;Liguria
+GO;Gorizia;45.9402;13.6204;Friuli Venezia Giulia
+GR;Grosseto;42.7603;11.1133;Toscana
+IM;Imperia;43.8896;8.0402;Liguria
+IS;Isernia;41.5931;14.2306;Molise
+AQ;L'Aquila;42.3496;13.3995;Abruzzo
+SP;La Spezia;44.1025;9.8241;Liguria
+LT;Latina;41.4676;12.9037;Lazio
+LE;Lecce;40.3515;18.175;Puglia
+LC;Lecco;45.8566;9.3977;Lombardia
+LI;Livorno;43.5485;10.3106;Toscana
+LO;Lodi;45.3142;9.5037;Lombardia
+LU;Lucca;43.837;10.4951;Toscana
+MC;Macerata;43.3001;13.4534;Marche
+MN;Mantova;45.1603;10.797;Lombardia
+MS;Massa-Carrara;44.035;10.1394;Toscana
+MT;Matera;40.6663;16.604;Basilicata
+VS;Medio Campidano;39.5412;8.7057;Sardegna
+ME;Messina;38.1938;15.554;Sicilia
+MI;Milano;45.4642;9.19;Lombardia
+MO;Modena;44.6471;10.9252;Emilia Romagna
+MB;Monza e della Brianza;45.5845;9.2744;Lombardia
+NA;Napoli;40.8522;14.2681;Campania
+NO;Novara;45.4456;8.6222;Piemonte
+NU;Nuoro;40.3212;9.3298;Sardegna
+OR;Oristano;39.9036;8.5912;Sardegna
+PD;Padova;45.4064;11.8768;Veneto
+PA;Palermo;38.1157;13.3615;Sicilia
+PR;Parma;44.8015;10.3279;Emilia Romagna
+PV;Pavia;45.1847;9.1582;Lombardia
+PG;Perugia;43.1107;12.3908;Umbria
+PU;Pesaro e Urbino;43.909;12.913;Marche
+PS;Pesaro e Urbino;43.909;12.913;Marche
+PE;Pescara;42.4643;14.2142;Abruzzo
+PC;Piacenza;45.0526;9.6927;Emilia Romagna
+PI;Pisa;43.716;10.3966;Toscana
+PT;Pistoia;43.9304;10.9229;Toscana
+PN;Pordenone;45.956;12.6605;Friuli Venezia Giulia
+PZ;Potenza;40.6401;15.805;Basilicata
+PO;Prato;43.8777;11.1022;Toscana
+RG;Ragusa;36.9269;14.7255;Sicilia
+RA;Ravenna;44.4184;12.2035;Emilia Romagna
+RC;Reggio Calabria;38.1144;15.6506;Calabria
+RE;Reggio Emilia;44.698;10.63;Emilia Romagna
+RI;Rieti;42.4048;12.8575;Lazio
+RN;Rimini;44.0609;12.5657;Emilia Romagna
+RM;Roma;41.9028;12.4964;Lazio
+RO;Rovigo;45.0705;11.7896;Veneto
+SA;Salerno;40.6824;14.7681;Campania
+SS;Sassari;40.7259;8.5555;Sardegna
+SV;Savona;44.309;8.4772;Liguria
+SI;Siena;43.3188;11.3308;Toscana
+SR;Siracusa;37.0755;15.2866;Sicilia
+SO;Sondrio;46.169;9.871;Lombardia
+SU;Sud Sardegna;39.3771;8.984;Sardegna
+TA;Taranto;40.4736;17.2414;Puglia
+TE;Teramo;42.6612;13.6987;Abruzzo
+TR;Terni;42.5636;12.6427;Umbria
+TO;Torino;45.0703;7.6869;Piemonte
+TP;Trapani;38.0183;12.5131;Sicilia
+TN;Trento;46.07;11.119;Trentino
+TV;Treviso;45.6669;12.2431;Veneto
+TS;Trieste;45.6495;13.7768;Friuli Venezia Giulia
+UD;Udine;46.0626;13.2343;Friuli Venezia Giulia
+VA;Varese;45.82;8.8251;Lombardia
+VE;Venezia;45.4408;12.3155;Veneto
+VB;Verbano-Cusio-Ossola;45.9214;8.5518;Piemonte
+VC;Vercelli;45.3231;8.4199;Piemonte
+VR;Verona;45.4384;10.9916;Veneto
+VV;Vibo Valentia;38.6744;16.1005;Calabria
+VI;Vicenza;45.5455;11.5354;Veneto
+VT;Viterbo;42.4207;12.1077;Lazio
