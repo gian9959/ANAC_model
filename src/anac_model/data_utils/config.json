@@ -1,0 +1,24 @@
+{
+  "db_params": {
+    "hostname" : "localhost",
+    "username" : "root",
+    "password" : "",
+    "database" : "anac"
+  },
+
+  "model_params": {
+    "checkpoint": "",
+    "train_length": 25,
+    "sessions": 1,
+    "hidden_layers": 4,
+    "dropout": true
+  },
+
+  "constants": {
+    "min_foundation": 1821,
+    "max_budget": 17367500000.0,
+    "min_revenue": -194457000.0,
+    "max_revenue": 110537000000.0,
+    "max_employees": 136928
+  }
+}

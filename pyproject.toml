@@ -1,7 +1,0 @@
-[build-system]
-requires = ["hatchling >= 1.26", "torch"]
-build-backend = "hatchling.build"
-
-[project]
-name = "anac_model"
-version = "0.0.1"

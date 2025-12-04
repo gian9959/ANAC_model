@@ -92,6 +92,8 @@ def collate(batch):
 
         c = b['companies']
         c_ids.append(c['id'])
+        regions.append(c['region'])
+        # add padding
         c_lat.append(func.pad(c['lat'], (0, max_comp - len(c['lat']))))
         c_lon.append(func.pad(c['lon'], (0, max_comp - len(c['lat']))))
         foundations.append(func.pad(c['foundation'], (0, max_comp - len(c['lat']))))
@@ -99,8 +101,7 @@ def collate(batch):
         employees.append(func.pad(c['employees'], (0, max_comp - len(c['lat']))))
         atecos.append(func.pad(c['ateco'], (0, 0, 0, max_comp - len(c['lat']))))
         labels.append(func.pad(c['label'], (0, max_comp - len(c['lat']))))
-        regions.append(c['region'])
-
+        # save mask to exclude padding elements later
         masks.append(func.pad(torch.ones(len(c['lat'])), (0, max_comp - len(c['lat']))))
 
     t_lat = torch.stack(t_lat)
