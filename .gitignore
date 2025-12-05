@@ -1,2 +1,4 @@
 /.idea/
+/src/anac_model/__pycache__/
+/src/anac_model/*/__pycache__/
 *.pth
